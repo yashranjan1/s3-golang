@@ -77,8 +77,8 @@ func (cfg *apiConfig) handlerUploadVideo(w http.ResponseWriter, r *http.Request)
 		return
 	}
 
-	defer os.Remove(filePointer.Name())
 	defer filePointer.Close()
+	defer os.Remove(filePointer.Name())
 
 	_, err = io.Copy(filePointer, video)
 	if err != nil {
@@ -95,7 +95,7 @@ func (cfg *apiConfig) handlerUploadVideo(w http.ResponseWriter, r *http.Request)
 	filePointer.Seek(0, io.SeekStart)
 
 	params := s3.PutObjectInput{
-		Bucket:      aws.String("tubely-64315469546"),
+		Bucket:      aws.String(cfg.s3Bucket),
 		Key:         aws.String(fullFileName),
 		Body:        filePointer,
 		ContentType: aws.String(mimeType),
