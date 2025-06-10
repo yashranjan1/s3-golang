@@ -101,7 +101,7 @@ func (cfg *apiConfig) handlerUploadVideo(w http.ResponseWriter, r *http.Request)
 		ContentType: aws.String(mimeType),
 	}
 
-	_, err = cfg.s3client.PutObject(context.Background(), &params, nil)
+	_, err = cfg.s3client.PutObject(context.Background(), &params)
 	if err != nil {
 		respondWithError(w, http.StatusInternalServerError, "Failed to upload file", err)
 		return
