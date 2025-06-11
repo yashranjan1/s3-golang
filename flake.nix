@@ -11,12 +11,13 @@
       pkgs = import nixpkgs {system = "x86_64-linux";};
     in
       pkgs.mkShell {
-        buildInputs = [
-          pkgs.go
-          pkgs.zsh
-          pkgs.openssl
-          pkgs.unixtools.xxd
-          pkgs.sqlite
+        buildInputs = with pkgs; [
+          go
+          zsh
+          openssl
+          unixtools.xxd
+          sqlite
+          ffmpeg_6
         ];
 
         shellHook = ''

@@ -86,11 +86,17 @@ func (cfg *apiConfig) handlerUploadVideo(w http.ResponseWriter, r *http.Request)
 		return
 	}
 
+	aspectRatio, err := getVideoAspectRatio(filePointer.Name())
+	if err != nil {
+		respondWithError(w, http.StatusInternalServerError, "Error fetching file aspect ratio", err)
+		return
+	}
+
 	randomBytes := make([]byte, 32)
 	rand.Read(randomBytes)
 	fileName := hex.EncodeToString(randomBytes)
 
-	fullFileName := fmt.Sprintf("%s.%s", fileName, "mp4")
+	fullFileName := fmt.Sprintf("%s/%s.%s", aspectRatio, fileName, "mp4")
 
 	filePointer.Seek(0, io.SeekStart)
 
