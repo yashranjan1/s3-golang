@@ -86,6 +86,19 @@ func (cfg *apiConfig) handlerUploadVideo(w http.ResponseWriter, r *http.Request)
 		return
 	}
 
+	fastStartFilePath, err := processVideoForFastStart(filePointer.Name())
+	if err != nil {
+		respondWithError(w, http.StatusInternalServerError, "Creating a faststart file failed", err)
+		return
+	}
+
+	fastStartFile, err := os.Open(fastStartFilePath)
+	if err != nil {
+		respondWithError(w, http.StatusInternalServerError, "Reading the faststart file failed", err)
+		return
+	}
+	defer fastStartFile.Close()
+
 	aspectRatio, err := getVideoAspectRatio(filePointer.Name())
 	if err != nil {
 		respondWithError(w, http.StatusInternalServerError, "Error fetching file aspect ratio", err)
@@ -103,7 +116,7 @@ func (cfg *apiConfig) handlerUploadVideo(w http.ResponseWriter, r *http.Request)
 	params := s3.PutObjectInput{
 		Bucket:      aws.String(cfg.s3Bucket),
 		Key:         aws.String(fullFileName),
-		Body:        filePointer,
+		Body:        fastStartFile,
 		ContentType: aws.String(mimeType),
 	}
 
