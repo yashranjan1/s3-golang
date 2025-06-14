@@ -44,8 +44,6 @@ func getVideoAspectRatio(filePath string) (string, error) {
 func processVideoForFastStart(filePath string) (string, error) {
 	outputFilePath := filePath + ".processing"
 
-	log.Printf(outputFilePath)
-
 	cmd := exec.Command("ffmpeg", "-i", filePath, "-c", "copy", "-movflags", "faststart", "-f", "mp4", outputFilePath)
 	var stderr bytes.Buffer
 	cmd.Stderr = &stderr
